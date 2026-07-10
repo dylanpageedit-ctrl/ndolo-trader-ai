@@ -4,18 +4,37 @@ import { useEffect } from "react";
 
 export default function Callback() {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    async function finishLogin() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
 
-    console.log("Deriv callback:", Object.fromEntries(params.entries()));
+      if (!code) {
+        alert("No authorization code received.");
+        return;
+      }
 
-    alert("Login successful! You can now continue building the trading bot.");
+      const response = await fetch("/api/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
+      });
 
-    window.location.href = "/";
+      const data = await response.json();
+
+      console.log(data);
+
+      alert("OAuth callback completed!");
+      window.location.href = "/";
+    }
+
+    finishLogin();
   }, []);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-      <h1 className="text-2xl">Connecting to Deriv...</h1>
+      <h1 className="text-2xl">Signing you in...</h1>
     </main>
   );
 }
