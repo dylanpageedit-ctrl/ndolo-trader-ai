@@ -4,37 +4,26 @@ import { useEffect } from "react";
 
 export default function Callback() {
   useEffect(() => {
-    async function finishLogin() {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
+    const params = new URLSearchParams(window.location.search);
 
-      if (!code) {
-        alert("No authorization code received.");
-        return;
-      }
+    const token = params.get("token");
 
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ code }),
-      });
-
-      const data = await response.json();
-
-      console.log(data);
-
-      alert("OAuth callback completed!");
+    if (!token) {
+      alert("No token received.");
       window.location.href = "/";
+      return;
     }
 
-    finishLogin();
+    localStorage.setItem("deriv_token", token);
+
+    alert("Connected successfully!");
+
+    window.location.href = "/";
   }, []);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-      <h1 className="text-2xl">Signing you in...</h1>
+      <h1>Connecting...</h1>
     </main>
   );
 }
