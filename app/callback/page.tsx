@@ -4,21 +4,7 @@ import { useEffect } from "react";
 
 export default function Callback() {
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-
-    const token = params.get("token");
-
-    if (!token) {
-      alert("No token received.");
-      window.location.href = "/";
-      return;
-    }
-
-    localStorage.setItem("deriv_token", token);
-
-    alert("Connected successfully!");
-
-    window.location.href = "/";
+    alert(window.location.href);
   }, []);
 
   return (
