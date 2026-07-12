@@ -11,19 +11,15 @@ export default function Callback() {
         const code = params.get("code");
         const state = params.get("state");
 
-        const savedState = sessionStorage.getItem("oauth_state");
-
         if (!code) {
           alert("No authorization code received.");
           return;
         }
 
-        if (state !== savedState) {
+        if (state !== sessionStorage.getItem("oauth_state")) {
           alert("Invalid OAuth state.");
           return;
         }
-
-        const codeVerifier = sessionStorage.getItem("code_verifier");
 
         const response = await fetch("/api/auth", {
           method: "POST",
@@ -32,19 +28,21 @@ export default function Callback() {
           },
           body: JSON.stringify({
             code,
-            codeVerifier,
+            codeVerifier: sessionStorage.getItem("code_verifier"),
           }),
         });
 
         const data = await response.json();
 
-        console.log(data);
-
         if (data.access_token) {
+          // Save the token so the app remembers you're connected
+          localStorage.setItem("deriv_token", data.access_token);
+
           alert("Connected successfully!");
+
           window.location.href = "/";
         } else {
-          alert(JSON.stringify(data, null, 2));
+          alert(JSON.stringify(data));
         }
       } catch (err: any) {
         alert(err.message || "Unknown error");
