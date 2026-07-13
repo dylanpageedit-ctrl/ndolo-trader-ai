@@ -32,7 +32,8 @@ export default function Callback() {
           }),
         });
 
-        const data = await response.json();
+  const data = await response.json();
+alert(JSON.stringify(data, null, 2));
 
         if (data.access_token) {
           // Save the token so the app remembers you're connected
