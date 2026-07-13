@@ -25,11 +25,20 @@ export default function Home() {
           setCurrency(account.currency);
         })
         .catch((err) => {
-          console.error(err);
-          setBalance("Error");
-          setAccountId("Error");
-          setCurrency("Error");
-        });
+  console.error(err);
+
+  const message =
+    err instanceof Error ? err.message : String(err);
+
+  setBalance(message);
+  setAccountId("-");
+  setCurrency("-");
+});
+          
+         
+          
+         
+       
     }
   }, []);
 
