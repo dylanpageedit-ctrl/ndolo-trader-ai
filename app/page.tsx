@@ -7,11 +7,18 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_DERIV_APP_ID!;
 
 export default function Home() {
   const [connected, setConnected] = useState(false);
+  const [balance, setBalance] = useState("--");
+  const [accountId, setAccountId] = useState("--");
+  const [currency, setCurrency] = useState("--");
 
   useEffect(() => {
     const token = localStorage.getItem("deriv_token");
+
     if (token) {
       setConnected(true);
+      setBalance("Loading...");
+      setAccountId("Loading...");
+      setCurrency("Loading...");
     }
   }, []);
 
@@ -41,6 +48,9 @@ export default function Home() {
   const disconnect = () => {
     localStorage.removeItem("deriv_token");
     setConnected(false);
+    setBalance("--");
+    setAccountId("--");
+    setCurrency("--");
   };
 
   return (
@@ -52,26 +62,30 @@ export default function Home() {
       <div className="bg-slate-900 rounded-xl p-6 mb-6">
         <h2 className="text-gray-400">Connection Status</h2>
 
-        <p
-          className={`font-bold ${
-            connected ? "text-green-400" : "text-red-400"
-          }`}
-        >
+        <p className={connected ? "text-green-400 font-bold" : "text-red-400 font-bold"}>
           {connected ? "✅ Connected" : "❌ Not Connected"}
         </p>
+      </div>
+
+      <div className="bg-slate-900 rounded-xl p-6 mb-6">
+        <h2 className="text-xl font-bold mb-4">Account</h2>
+
+        <p>💰 Balance: {balance}</p>
+        <p>👤 Account ID: {accountId}</p>
+        <p>💱 Currency: {currency}</p>
       </div>
 
       {!connected ? (
         <button
           onClick={connectDemo}
-          className="w-full bg-blue-600 hover:bg-blue-700 p-4 rounded-xl font-bold text-lg"
+          className="w-full bg-blue-600 hover:bg-blue-700 p-4 rounded-xl font-bold"
         >
           🔐 Connect Demo Account
         </button>
       ) : (
         <button
           onClick={disconnect}
-          className="w-full bg-red-600 hover:bg-red-700 p-4 rounded-xl font-bold text-lg"
+          className="w-full bg-red-600 hover:bg-red-700 p-4 rounded-xl font-bold"
         >
           Disconnect
         </button>
