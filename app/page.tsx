@@ -24,10 +24,22 @@ export default function Home() {
       })
         .then((res) => res.json())
         .then((account) => {
-          setBalance(String(account.balance ?? "--"));
-          setAccountId(account.loginid ?? "--");
-          setCurrency(account.currency ?? "--");
-        })
+  console.log(account);
+
+  if (account.error) {
+    alert(JSON.stringify(account));
+    return;
+  }
+
+  setBalance(String(account.balance ?? "--"));
+  setAccountId(account.loginid ?? "--");
+  setCurrency(account.currency ?? "--");
+})
+
+          
+          
+          
+        
         .catch((err) => {
           console.error(err);
           setBalance("Error");
