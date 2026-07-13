@@ -1,11 +1,16 @@
 export async function connectDeriv(token: string) {
   return new Promise((resolve, reject) => {
+    const appId = process.env.NEXT_PUBLIC_DERIV_APP_ID;
+
+    console.log("Using App ID:", appId);
+
     const ws = new WebSocket(
-      "wss://ws.derivws.com/websockets/v3?app_id=" +
-        process.env.NEXT_PUBLIC_DERIV_APP_ID
+      `wss://ws.derivws.com/websockets/v3?app_id=${appId}`
     );
 
     ws.onopen = () => {
+      console.log("WebSocket connected");
+
       ws.send(
         JSON.stringify({
           authorize: token,
@@ -19,7 +24,7 @@ export async function connectDeriv(token: string) {
       console.log("Deriv response:", data);
 
       if (data.error) {
-        console.error("Deriv error:", data.error);
+        ws.close();
 
         reject(
           new Error(
@@ -27,7 +32,6 @@ export async function connectDeriv(token: string) {
           )
         );
 
-        ws.close();
         return;
       }
 
@@ -39,12 +43,16 @@ export async function connectDeriv(token: string) {
       }
     };
 
-    ws.onerror = () => {
-      reject(new Error("WebSocket connection failed"));
+    ws.onerror = (event) => {
+      console.error("WebSocket Error:", event);
+
+      reject(
+        new Error("WebSocket failed. Check browser console.")
+      );
     };
 
-    ws.onclose = () => {
-      console.log("WebSocket closed");
+    ws.onclose = (event) => {
+      console.log("WebSocket closed:", event);
     };
   });
 }
