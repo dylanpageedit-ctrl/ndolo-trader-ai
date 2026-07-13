@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { createPKCE } from "../lib/pkce";
-import { connectDeriv } from "../lib/deriv";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_DERIV_APP_ID!;
 
@@ -18,27 +17,23 @@ export default function Home() {
     if (token) {
       setConnected(true);
 
-      connectDeriv(token)
-        .then(({ account }: any) => {
-          setBalance(String(account.balance));
-          setAccountId(account.loginid);
-          setCurrency(account.currency);
+      fetch("/api/account", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((account) => {
+          setBalance(String(account.balance ?? "--"));
+          setAccountId(account.loginid ?? "--");
+          setCurrency(account.currency ?? "--");
         })
         .catch((err) => {
-  console.error(err);
-
-  const message =
-    err instanceof Error ? err.message : String(err);
-
-  setBalance(message);
-  setAccountId("-");
-  setCurrency("-");
-});
-          
-         
-          
-         
-       
+          console.error(err);
+          setBalance("Error");
+          setAccountId("-");
+          setCurrency("-");
+        });
     }
   }, []);
 
