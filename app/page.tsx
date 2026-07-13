@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPKCE } from "../lib/pkce";
+import { connectDeriv } from "../lib/deriv";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_DERIV_APP_ID!;
 
@@ -16,9 +17,19 @@ export default function Home() {
 
     if (token) {
       setConnected(true);
-      setBalance("Loading...");
-      setAccountId("Loading...");
-      setCurrency("Loading...");
+
+      connectDeriv(token)
+        .then(({ account }: any) => {
+          setBalance(String(account.balance));
+          setAccountId(account.loginid);
+          setCurrency(account.currency);
+        })
+        .catch((err) => {
+          console.error(err);
+          setBalance("Error");
+          setAccountId("Error");
+          setCurrency("Error");
+        });
     }
   }, []);
 
