@@ -61,7 +61,7 @@ export default function Home() {
 
     const url =
       `https://auth.deriv.com/oauth2/auth` +
-      `?client_id=${CLIENT_ID}` +
+      `?app_id=${CLIENT_ID}` +
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&response_type=code` +
       `&code_challenge=${codeChallenge}` +
